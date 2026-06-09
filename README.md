@@ -104,7 +104,7 @@ O projeto permitiu demonstrar na prática diversos conceitos de acessibilidade w
 
 ### Página Inicial
 
-![Página Inicial](images/home)
+![Página Inicial](images/home.png)
 
 ### Exemplo do Teclado Virtual
 
