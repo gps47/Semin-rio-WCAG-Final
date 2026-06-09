@@ -1038,26 +1038,40 @@
         <li>Alternância de tema claro/escuro com contraste validado em ambos os modos.</li>
       </ul>
 
-      <h3 style="margin-top:2.5rem">Exemplo de código — Skip Link</h3>
-      <pre><code>&lt;!-- HTML --&gt;
-&lt;a href="#main-content" class="skip-link"&gt;
-  Pular para o conteúdo principal
-&lt;/a&gt;
+      <h3 style="margin-top:2.5rem">Exemplo de código — Toggle de Tema Acessível</h3>
+      <pre><code>&lt;!-- HTML: Botão com ARIA attributes --&gt;
+&lt;button id="theme-toggle"
+        class="theme-toggle"
+        aria-label="Alternar para modo claro"
+        aria-pressed="false"
+        title="Alternar tema claro/escuro"&gt;
+  &lt;span class="icon" aria-hidden="true"&gt;🌙&lt;/span&gt;
+  &lt;span class="theme-toggle-label"&gt;Escuro&lt;/span&gt;
+&lt;/button&gt;
 
-/* CSS */
-.skip-link {
-  position: fixed;
-  top: -100px;          /* escondido por padrão */
-  left: 1rem;
-  background: #f5c842;
-  color: #000;
-  padding: .5rem 1.2rem;
-  text-decoration: none;
-  transition: top .2s;
+/* CSS: Transição suave e estados visuais */
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .35rem .8rem;
+  cursor: pointer;
+  transition: background .2s, color .2s;
 }
-.skip-link:focus {
-  top: 0;               /* visível ao receber foco */
-}</code></pre>
+.theme-toggle:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* JavaScript: Lógica e ARIA */
+btn.addEventListener('click', () => {
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  btn.setAttribute('aria-pressed', isDark);
+  btn.setAttribute('aria-label', 
+    isDark ? 'Alternar para modo escuro' : 'Alternar para modo claro');
+});</code></pre>
 
       <h3 style="margin-top:2.5rem">Exemplo de código — Tab acessível</h3>
       <pre><code>&lt;!-- ARIA roles para tabs --&gt;
