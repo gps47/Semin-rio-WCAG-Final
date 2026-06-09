@@ -1,1 +1,1 @@
-# Semin-rio-WCAG-Final
+# Seminario-WCAG-Final
