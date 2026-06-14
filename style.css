@@ -1,0 +1,1158 @@
+/* ============================================================
+   WCAG na Prática — Folha de Estilos Principal
+   Organização:
+     1. Variáveis de tema (claro e escuro)
+     2. Reset e base
+     3. Componentes de navegação
+     4. Seção hero (destaque inicial)
+     5. Títulos de seção
+     6. Cards informativos
+     7. Cards de princípios POUR
+     8. Tabela comparativa
+     9. Caixas de demonstração
+    10. Teclado virtual
+    11. Formulário
+    12. Abas (tabs)
+    13. Checklist
+    14. Cards de aplicações
+    15. Passos de implementação
+    16. Blocos de código
+    17. Bloco de conclusão
+    18. Lista de resultados
+    19. Rodapé
+    20. Responsividade
+    21. Animações
+   ============================================================ */
+
+
+/* ============================================================
+   1. VARIÁVEIS DE TEMA
+   Usando CSS Custom Properties para facilitar a troca de tema.
+   O atributo [data-theme] no <html> controla qual conjunto
+   de variáveis está ativo.
+   ============================================================ */
+
+/* -- Tema escuro (padrão) ----------------------------------- */
+:root,
+[data-theme="dark"] {
+  --bg:        #0e0e10;       /* fundo da página */
+  --surface:   #18181c;       /* fundo de cards e painéis */
+  --border:    #2e2e36;       /* bordas sutis */
+  --accent:    #f5c842;       /* amarelo — destaque principal */
+  --accent2:   #4af7c4;       /* verde-água — destaque secundário */
+  --accent3:   #f76f4a;       /* laranja — labels de seção */
+  --text:      #f0ede8;       /* texto principal */
+  --muted:     #8a8796;       /* texto secundário / placeholders */
+  --pass:      #3ecf6e;       /* verde de "aprovado" */
+  --fail:      #f75a5a;       /* vermelho de "reprovado" */
+  --nav-bg:    rgba(14,14,16,.92);
+  --contrast-bad-bg:  #c8c8c0;
+  --contrast-bad-fg:  #a0a09a;
+  --contrast-good-bg: #1a1a2e;
+  --contrast-good-fg: #f5c842;
+  --btn-bad-bg: #333;
+  --btn-bad-fg: #fff;
+  --code-bg:   #0a0a0c;
+  --concl-bg:  var(--surface);
+  --radius:    12px;
+  --mono:      'Space Mono', monospace;
+  --serif:     'Fraunces', Georgia, serif;
+}
+
+/* -- Tema claro --------------------------------------------- */
+/*    Cores escurecidas para manter contraste ≥ 4.5:1 no fundo claro */
+[data-theme="light"] {
+  --bg:        #f5f4f0;
+  --surface:   #ffffff;
+  --border:    #d8d5cc;
+  --accent:    #c89a00;       /* amarelo escurecido — legível no claro */
+  --accent2:   #0a9e7a;       /* verde-água escurecido */
+  --accent3:   #c94a1a;
+  --text:      #1a1a1e;
+  --muted:     #5a5768;
+  --pass:      #1a8a46;
+  --fail:      #c0302f;
+  --nav-bg:    rgba(245,244,240,.92);
+  --contrast-bad-bg:  #c8c8c0;
+  --contrast-bad-fg:  #a0a09a;
+  --contrast-good-bg: #1a1a2e;
+  --contrast-good-fg: #f5c842;
+  --btn-bad-bg: #bbb;
+  --btn-bad-fg: #888;
+  --code-bg:   #eeece8;
+  --concl-bg:  #fff8e6;
+}
+
+
+/* ============================================================
+   2. RESET E BASE
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* rolagem suave ao clicar em âncoras */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background .35s ease, color .35s ease; /* transição suave na troca de tema */
+}
+
+/* Skip link — visível apenas quando focado pelo teclado.
+   Permite que usuários de teclado pulem o menu de navegação. */
+.skip-link {
+  position: fixed;
+  top: -100px;    /* escondido fora da tela por padrão */
+  left: 1rem;
+  z-index: 9999;
+  background: var(--accent);
+  color: #000;
+  padding: .5rem 1.2rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-weight: 700;
+  text-decoration: none;
+  transition: top .2s;
+}
+
+.skip-link:focus {
+  top: 0;         /* aparece ao receber foco via Tab */
+}
+
+
+/* ============================================================
+   3. NAVEGAÇÃO
+   ============================================================ */
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(14px);     /* efeito de vidro fosco */
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  transition: background .35s ease, border-color .35s ease;
+}
+
+.nav-brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: -.02em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+
+/* Estado de hover e foco com outline visível — WCAG 2.4.7 */
+.nav-links a:hover,
+.nav-links a:focus {
+  color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Botão de alternar tema claro/escuro */
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .35rem .8rem;
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--muted);
+  transition: background .2s, border-color .2s, color .2s, transform .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent2);
+  color: var(--text);
+  transform: scale(1.04);
+}
+
+.theme-toggle:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.theme-toggle .icon {
+  font-size: 1rem;
+  transition: transform .4s ease;
+}
+
+.theme-toggle:hover .icon {
+  transform: rotate(20deg);
+}
+
+.theme-toggle-label {
+  letter-spacing: .04em;
+}
+
+
+/* ============================================================
+   4. HERO (SEÇÃO DE DESTAQUE INICIAL)
+   ============================================================ */
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+section {
+  padding: 4rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+section:last-child {
+  border-bottom: none;
+}
+
+.hero {
+  padding: 5rem 0 3rem;
+  position: relative;
+}
+
+/* Pílula de categoria no topo do hero */
+.hero-tag {
+  display: inline-block;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  border: 1px solid var(--accent2);
+  padding: .2rem .8rem;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 7vw, 4.8rem); /* tamanho fluido entre mobile e desktop */
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero p {
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.8;
+}
+
+/* Grade de estatísticas no hero */
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.hero-stat {
+  background: var(--surface);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: background .35s;
+}
+
+.hero-stat strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.hero-stat span {
+  font-size: .72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+
+/* ============================================================
+   5. TÍTULOS DE SEÇÃO
+   ============================================================ */
+
+/* Rótulo pequeno acima do h2, como "01 — Introdução" */
+.section-label {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--accent3);
+  margin-bottom: .5rem;
+}
+
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: .75rem;
+}
+
+
+/* ============================================================
+   6. CARDS INFORMATIVOS (tipos de deficiência)
+   ============================================================ */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.card {
+  background: var(--surface);
+  padding: 1.5rem;
+  transition: background .35s;
+}
+
+.card-icon {
+  font-size: 1.8rem;
+  margin-bottom: .75rem;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+
+/* ============================================================
+   7. CARDS DE PRINCÍPIOS POUR
+   ============================================================ */
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.principle {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  background: var(--surface);
+  transition: border-color .2s, transform .2s, background .35s;
+  cursor: default;
+}
+
+.principle:hover {
+  border-color: var(--accent2);
+  transform: translateY(-3px);
+}
+
+.principle-letter {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--accent2);
+  line-height: 1;
+  margin-bottom: .4rem;
+}
+
+.principle h3 {
+  font-size: 1rem;
+  margin-bottom: .3rem;
+}
+
+.principle p {
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+
+/* ============================================================
+   8. TABELA COMPARATIVA (níveis A / AA / AAA)
+   ============================================================ */
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--surface);
+}
+
+th {
+  text-align: left;
+  padding: .9rem 1.2rem;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: .85rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  font-size: .85rem;
+  vertical-align: top;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: rgba(128,128,128,.06);
+}
+
+/* Badges coloridos por nível */
+.badge {
+  display: inline-block;
+  padding: .15rem .6rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+.badge-a   { background: #3ecf6e22; color: var(--pass);    border: 1px solid #3ecf6e44; }
+.badge-aa  { background: #f5c84222; color: var(--accent);  border: 1px solid #f5c84244; }
+.badge-aaa { background: #4af7c422; color: var(--accent2); border: 1px solid #4af7c444; }
+
+
+/* ============================================================
+   9. CAIXAS DE DEMONSTRAÇÃO
+   ============================================================ */
+
+.demo-box {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+/* Barra de título estilo editor de código */
+.demo-header {
+  background: var(--surface);
+  padding: .75rem 1.2rem;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  transition: background .35s;
+}
+
+/* Bolinhas decorativas (vermelho / amarelo / verde) */
+.dot           { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r         { background: #f75a5a; }
+.dot-y         { background: #f5c842; }
+.dot-g         { background: #3ecf6e; }
+
+.demo-body     { padding: 1.5rem; }
+
+/* --- Demo de Contraste --- */
+.contrast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.contrast-sample {
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.contrast-bad  { background: var(--contrast-bad-bg);  color: var(--contrast-bad-fg); }
+.contrast-good { background: var(--contrast-good-bg); color: var(--contrast-good-fg); }
+
+.contrast-label {
+  font-size: .75rem;
+  margin-top: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.icon-pass { color: var(--pass); }
+.icon-fail { color: var(--fail); }
+
+/* --- Demo de Foco --- */
+.focus-demo {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: .5rem;
+}
+
+/* Botão MAU exemplo: sem outline ao receber foco */
+.btn-bad {
+  background: var(--btn-bad-bg);
+  color: var(--btn-bad-fg);
+  border: none;
+  padding: .6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .85rem;
+}
+
+.btn-bad:focus {
+  outline: none; /* ← ERRADO: nunca faça isso sem substituto */
+}
+
+/* Botão BOM exemplo: outline claro e bem visível */
+.btn-good {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: .6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .85rem;
+  font-weight: 700;
+  transition: background .2s;
+}
+
+.btn-good:focus {
+  outline: 3px solid var(--accent2); /* ← CORRETO */
+  outline-offset: 3px;
+}
+
+.btn-good:hover {
+  background: #ffd970;
+}
+
+
+/* ============================================================
+   10. TECLADO VIRTUAL
+   ============================================================ */
+
+/* Wrapper que junta o input com o botão de abrir o teclado */
+.input-vk-wrap {
+  display: flex;
+  gap: .4rem;
+  align-items: stretch;
+}
+
+.input-vk-wrap input {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+/* Botão ⌨ ao lado do campo */
+.vk-trigger {
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--accent2);
+  font-size: 1.05rem;
+  padding: 0 .7rem;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .1s;
+  line-height: 1;
+}
+
+.vk-trigger:hover {
+  background: var(--bg);
+  border-color: var(--accent2);
+  transform: scale(1.08);
+}
+
+.vk-trigger:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Painel principal do teclado virtual */
+.vk-panel {
+  margin-top: 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: none;           /* oculto por padrão */
+  flex-direction: column;
+  gap: .6rem;
+  animation: vkSlideIn .2s ease both;
+}
+
+.vk-panel[aria-hidden="false"] {
+  display: flex;           /* visível quando aria-hidden="false" */
+}
+
+@keyframes vkSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Barra superior: nome do campo + texto digitado + botão fechar */
+.vk-topbar {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .5rem .8rem;
+  min-height: 2.4rem;
+}
+
+.vk-field-name {
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.vk-preview-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  overflow: hidden;
+  gap: 1px;
+}
+
+/* Área de pré-visualização do texto digitado */
+.vk-preview {
+  font-size: .9rem;
+  color: var(--text);
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+  letter-spacing: .04em;
+}
+
+/* Cursor piscante */
+.vk-cursor {
+  color: var(--accent);
+  font-weight: 700;
+  animation: blink 1s step-end infinite;
+  flex-shrink: 0;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Botão X para fechar o teclado */
+.vk-close {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: .85rem;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+
+.vk-close:hover  { background: var(--fail); color: #fff; border-color: var(--fail); }
+.vk-close:focus  { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Fileira de teclas */
+.vk-row {
+  display: flex;
+  gap: .35rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Tecla padrão */
+.vk-key {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: .82rem;
+  font-weight: 700;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  padding: 0 .4rem;
+  cursor: pointer;
+  transition: background .1s, border-color .1s, transform .08s, color .1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.vk-key:hover {
+  background: var(--accent2);
+  color: #000;
+  border-color: var(--accent2);
+  transform: translateY(-2px);
+}
+
+.vk-key:active { transform: translateY(0) scale(.94); }
+.vk-key:focus  { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Teclas de ação: backspace, caps, confirmar */
+.vk-key--action {
+  background: var(--surface);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.vk-key--action:hover {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+
+.vk-key--wide    { min-width: 3.2rem; }
+.vk-key--space   { flex: 1; min-width: 8rem; }
+
+.vk-key--confirm {
+  background: var(--accent2);
+  color: #000;
+  border-color: var(--accent2);
+  min-width: 4.5rem;
+  font-weight: 700;
+}
+
+.vk-key--confirm:hover {
+  background: #6effd8;
+  border-color: #6effd8;
+  color: #000;
+}
+
+/* Caps Lock ativo */
+.vk-key--caps-on {
+  background: var(--accent) !important;
+  color: #000 !important;
+  border-color: var(--accent) !important;
+}
+
+
+/* ============================================================
+   11. FORMULÁRIO ACESSÍVEL
+   ============================================================ */
+
+.form-demo {
+  display: grid;
+  gap: 1rem;
+  max-width: 420px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+
+/* Label: cor de destaque para boa legibilidade — WCAG 1.4.3 */
+.field-group label {
+  font-size: .8rem;
+  color: var(--accent2);
+  letter-spacing: .04em;
+}
+
+.field-group input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: .6rem .9rem;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: .85rem;
+  transition: border-color .2s, background .35s;
+}
+
+/* Foco com outline claro — WCAG 2.4.7 */
+.field-group input:focus {
+  outline: 2px solid var(--accent);
+  border-color: var(--accent);
+}
+
+.field-group .hint  { font-size: .72rem; color: var(--muted); }
+.field-group .error { font-size: .72rem; color: var(--fail); display: none; }
+
+/* Quando aria-invalid="true": borda vermelha e troca hint por erro — WCAG 3.3.1 */
+.field-group input[aria-invalid="true"]        { border-color: var(--fail); }
+.field-group input[aria-invalid="true"] + .hint  { display: none; }
+.field-group input[aria-invalid="true"] ~ .error { display: block; }
+
+.btn-submit {
+  background: var(--accent2);
+  color: #000;
+  border: none;
+  padding: .7rem 1.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: .85rem;
+  width: fit-content;
+  transition: background .2s, transform .1s;
+}
+
+.btn-submit:focus  { outline: 3px solid var(--accent); outline-offset: 3px; }
+.btn-submit:hover  { background: #6effd8; transform: translateY(-1px); }
+
+.form-result {
+  margin-top: 1rem;
+  padding: .75rem 1rem;
+  border-radius: 8px;
+  font-size: .85rem;
+  display: none;
+}
+
+.form-result.success   { background: #3ecf6e22; border: 1px solid #3ecf6e44; color: var(--pass); display: block; }
+.form-result.error-msg { background: #f75a5a22; border: 1px solid #f75a5a44; color: var(--fail); display: block; }
+
+
+/* ============================================================
+   12. ABAS (TABS)
+   ============================================================ */
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: .7rem 1.2rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .8rem;
+  letter-spacing: .04em;
+  transition: color .2s, border-color .2s;
+  margin-bottom: -1px; /* alinha com a borda do container */
+}
+
+/* Aba ativa */
+.tab-btn[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tab-btn:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* Painel de aba: oculto por padrão */
+.tab-panel { display: none; }
+.tab-panel[aria-hidden="false"] { display: block; }
+
+
+/* ============================================================
+   13. CHECKLIST
+   ============================================================ */
+
+.checklist {
+  list-style: none;
+  display: grid;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .6rem .9rem;
+  background: var(--surface);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: .85rem;
+  transition: background .35s;
+}
+
+.checklist li input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent2);
+  flex-shrink: 0;
+  margin-top: .2rem;
+  cursor: pointer;
+}
+
+.checklist li label { cursor: pointer; }
+
+
+/* ============================================================
+   14. CARDS DE APLICAÇÕES PRÁTICAS
+   ============================================================ */
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.app-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color .2s, transform .2s, background .35s;
+}
+
+.app-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.app-card .app-icon { font-size: 2rem; margin-bottom: .75rem; }
+.app-card h3        { font-size: 1rem; margin-bottom: .4rem; }
+.app-card p         { font-size: .82rem; color: var(--muted); }
+
+.app-tag {
+  display: inline-block;
+  font-size: .68rem;
+  padding: .1rem .5rem;
+  background: #f5c84215;
+  color: var(--accent);
+  border: 1px solid #f5c84230;
+  border-radius: 999px;
+  margin-top: .75rem;
+}
+
+
+/* ============================================================
+   15. PASSOS DE IMPLEMENTAÇÃO
+   ============================================================ */
+
+.steps {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Número do passo em círculo */
+.step-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.step-content h3 { font-size: 1rem; margin-bottom: .3rem; }
+.step-content p  { font-size: .85rem; color: var(--muted); }
+
+
+/* ============================================================
+   16. BLOCOS DE CÓDIGO
+   ============================================================ */
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  font-size: .8rem;
+  line-height: 1.6;
+  margin-top: 1rem;
+  color: var(--accent2);
+  transition: background .35s;
+}
+
+code { font-family: var(--mono); }
+
+
+/* ============================================================
+   17. BLOCO DE CONCLUSÃO
+   ============================================================ */
+
+.conclusion-block {
+  background: var(--concl-bg);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.5rem 2rem;
+  margin-top: 2rem;
+  font-size: .9rem;
+  line-height: 1.9;
+  transition: background .35s;
+}
+
+.conclusion-block strong { color: var(--accent); }
+
+
+/* ============================================================
+   18. LISTA DE RESULTADOS
+   ============================================================ */
+
+.results-list {
+  list-style: none;
+  display: grid;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+.results-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+/* Ícone de check verde antes de cada item */
+.results-list li::before {
+  content: "✓";
+  color: var(--pass);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   19. RODAPÉ
+   ============================================================ */
+
+footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--muted);
+  font-size: .78rem;
+  border-top: 1px solid var(--border);
+  line-height: 2;
+}
+
+footer a {
+  color: var(--accent2);
+  text-decoration: none;
+}
+
+footer a:hover,
+footer a:focus {
+  text-decoration: underline;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   20. RESPONSIVIDADE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  /* Estatísticas do hero em 2 colunas no celular */
+  .hero-grid         { grid-template-columns: 1fr 1fr; }
+
+  /* Demo de contraste empilhada no celular */
+  .contrast-grid     { grid-template-columns: 1fr; }
+
+  /* Padding menor na nav e links escondidos (menu hamburger futuro) */
+  nav                { padding: .75rem 1rem; }
+  .nav-links         { display: none; }
+}
+
+
+/* ============================================================
+   21. ANIMAÇÕES
+   ============================================================ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero entra com animação na carga da página */
+.hero { animation: fadeUp .6s ease both; }
