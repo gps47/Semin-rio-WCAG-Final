@@ -6,581 +6,15 @@
   <title>WCAG na Prática – Acessibilidade Web</title>
   <meta name="description" content="Mini projeto educacional sobre WCAG e acessibilidade web: definições, princípios, exemplos práticos e demonstrações interativas." />
 
+  <!-- Ícone da página -->
   <link rel="icon" type="image/jpeg" href="images/logo.jpg">
 
-  <!-- Fonts -->
+  <!-- Fontes do Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
-  <style>
-    /* ─── Tema Escuro ───────────────── */
-    :root,
-    [data-theme="dark"] {
-      --bg:        #0e0e10;
-      --surface:   #18181c;
-      --border:    #2e2e36;
-      --accent:    #f5c842;
-      --accent2:   #4af7c4;
-      --accent3:   #f76f4a;
-      --text:      #f0ede8;
-      --muted:     #8a8796;
-      --pass:      #3ecf6e;
-      --fail:      #f75a5a;
-      --nav-bg:    rgba(14,14,16,.92);
-      --contrast-bad-bg:  #c8c8c0;
-      --contrast-bad-fg:  #a0a09a;
-      --contrast-good-bg: #1a1a2e;
-      --contrast-good-fg: #f5c842;
-      --btn-bad-bg: #333;
-      --btn-bad-fg: #fff;
-      --code-bg:   #0a0a0c;
-      --concl-bg:  var(--surface);
-      --radius:    12px;
-      --mono:      'Space Mono', monospace;
-      --serif:     'Fraunces', Georgia, serif;
-    }
-
-    /* ─── Tema Claro ────────────────────────── */
-    [data-theme="light"] {
-      --bg:        #f5f4f0;
-      --surface:   #ffffff;
-      --border:    #d8d5cc;
-      --accent:    #c89a00;      /* amarelo mais escuro → contraste no claro */
-      --accent2:   #0a9e7a;      /* verde escuro */
-      --accent3:   #c94a1a;
-      --text:      #1a1a1e;
-      --muted:     #5a5768;
-      --pass:      #1a8a46;
-      --fail:      #c0302f;
-      --nav-bg:    rgba(245,244,240,.92);
-      --contrast-bad-bg:  #c8c8c0;
-      --contrast-bad-fg:  #a0a09a;
-      --contrast-good-bg: #1a1a2e;
-      --contrast-good-fg: #f5c842;
-      --btn-bad-bg: #bbb;
-      --btn-bad-fg: #888;
-      --code-bg:   #eeece8;
-      --concl-bg:  #fff8e6;
-    }
-
-   /* ─── Reinicialização básica dos estilos ─────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 15px;
-      line-height: 1.7;
-      overflow-x: hidden;
-      transition: background .35s ease, color .35s ease;
-    }
-
-    /* ─── Link para pular ao conteúdo principal ──────────────────── */
-    .skip-link {
-      position: fixed;
-      top: -100px;
-      left: 1rem;
-      z-index: 9999;
-      background: var(--accent);
-      color: #000;
-      padding: .5rem 1.2rem;
-      border-radius: 0 0 var(--radius) var(--radius);
-      font-weight: 700;
-      text-decoration: none;
-      transition: top .2s;
-    }
-    .skip-link:focus { top: 0; }
-
-    /* ─── Barra de navegação ─────────────────────────────────────── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--nav-bg);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: .75rem 2rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-      transition: background .35s ease, border-color .35s ease;
-    }
-    .nav-brand {
-      font-family: var(--serif);
-      font-weight: 900;
-      font-size: 1.1rem;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: -.02em;
-    }
-    .nav-links { display: flex; gap: 1.5rem; flex-wrap: wrap; list-style: none; }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: .8rem;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      transition: color .2s;
-    }
-    .nav-links a:hover,
-    .nav-links a:focus { color: var(--accent); outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
-
-    /* ─── Theme toggle button ────────────────── */
-    .theme-toggle {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-      padding: .35rem .8rem;
-      font-family: var(--mono);
-      font-size: .75rem;
-      color: var(--muted);
-      transition: background .2s, border-color .2s, color .2s, transform .15s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .theme-toggle:hover { border-color: var(--accent2); color: var(--text); transform: scale(1.04); }
-    .theme-toggle:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
-    .theme-toggle .icon { font-size: 1rem; transition: transform .4s ease; }
-    .theme-toggle:hover .icon { transform: rotate(20deg); }
-    .theme-toggle-label { letter-spacing: .04em; }
-
-    /* ─── Seções da página ───────────────────────────────────────── */
-    main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
-    section { padding: 4rem 0 2rem; border-bottom: 1px solid var(--border); }
-    section:last-child { border-bottom: none; }
-
-    /* ─── Bloco de destaque inicial ──────────────────────────────── */
-    .hero { padding: 5rem 0 3rem; position: relative; }
-    .hero-tag {
-      display: inline-block;
-      font-size: .72rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      border: 1px solid var(--accent2);
-      padding: .2rem .8rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
-    }
-    .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(2.5rem, 7vw, 4.8rem);
-      font-weight: 900;
-      line-height: 1.05;
-      letter-spacing: -.03em;
-      margin-bottom: 1.5rem;
-    }
-    .hero h1 em { font-style: italic; color: var(--accent); }
-    .hero p { max-width: 58ch; color: var(--muted); font-size: .95rem; line-height: 1.8; }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      margin-top: 3rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    .hero-stat { background: var(--surface); padding: 1.5rem 1rem; text-align: center; transition: background .35s; }
-    .hero-stat strong {
-      display: block;
-      font-family: var(--serif);
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--accent);
-    }
-    .hero-stat span { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-
-    /* ─── Section headings ───────────────────── */
-    .section-label {
-      font-size: .7rem;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      color: var(--accent3);
-      margin-bottom: .5rem;
-    }
-    h2 {
-      font-family: var(--serif);
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 600;
-      line-height: 1.15;
-      letter-spacing: -.02em;
-      margin-bottom: 1.5rem;
-    }
-    h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; margin-bottom: .75rem; }
-
-    /* ─── Card grid ──────────────────────────── */
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 2rem; }
-    .card { background: var(--surface); padding: 1.5rem; transition: background .35s; }
-    .card-icon { font-size: 1.8rem; margin-bottom: .75rem; }
-    .card p { color: var(--muted); font-size: .85rem; }
-
-    /* ─── Principle pills ────────────────────── */
-    .principles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem; }
-    .principle {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      background: var(--surface);
-      transition: border-color .2s, transform .2s, background .35s;
-      cursor: default;
-    }
-    .principle:hover { border-color: var(--accent2); transform: translateY(-3px); }
-    .principle-letter { font-family: var(--serif); font-size: 2.5rem; font-weight: 900; color: var(--accent2); line-height: 1; margin-bottom: .4rem; }
-    .principle h3 { font-size: 1rem; margin-bottom: .3rem; }
-    .principle p { font-size: .78rem; color: var(--muted); }
-
-    /* ─── Input + VK trigger wrap ───────────── */
-    .input-vk-wrap {
-      display: flex;
-      gap: .4rem;
-      align-items: stretch;
-    }
-    .input-vk-wrap input {
-      flex: 1;
-      min-width: 0;
-      cursor: pointer;
-    }
-    .vk-trigger {
-      flex-shrink: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--accent2);
-      font-size: 1.05rem;
-      padding: 0 .7rem;
-      cursor: pointer;
-      transition: background .2s, border-color .2s, transform .1s;
-      line-height: 1;
-    }
-    .vk-trigger:hover { background: var(--bg); border-color: var(--accent2); transform: scale(1.08); }
-    .vk-trigger:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-    /* ─── Virtual Keyboard Panel ─────────────── */
-    .vk-panel {
-      margin-top: 1.2rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      display: none;
-      flex-direction: column;
-      gap: .6rem;
-      /* smooth appear */
-      animation: vkSlideIn .2s ease both;
-    }
-    .vk-panel[aria-hidden="false"] { display: flex; }
-
-    @keyframes vkSlideIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .vk-topbar {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .5rem .8rem;
-      min-height: 2.4rem;
-    }
-    .vk-field-name {
-      font-size: .68rem;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--accent2);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .vk-preview-wrap {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      overflow: hidden;
-      gap: 1px;
-    }
-    .vk-preview {
-      font-size: .9rem;
-      color: var(--text);
-      white-space: pre;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      min-width: 0;
-      flex: 1;
-      letter-spacing: .04em;
-    }
-    .vk-cursor {
-      color: var(--accent);
-      font-weight: 700;
-      animation: blink 1s step-end infinite;
-      flex-shrink: 0;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    .vk-close {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--muted);
-      width: 28px; height: 28px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: .85rem; flex-shrink: 0;
-      transition: background .15s, color .15s;
-    }
-    .vk-close:hover { background: var(--fail); color: #fff; border-color: var(--fail); }
-    .vk-close:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    .vk-row {
-      display: flex;
-      gap: .35rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .vk-key {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: .82rem;
-      font-weight: 700;
-      min-width: 2.4rem;
-      height: 2.4rem;
-      padding: 0 .4rem;
-      cursor: pointer;
-      transition: background .1s, border-color .1s, transform .08s, color .1s;
-      display: flex; align-items: center; justify-content: center;
-      line-height: 1;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .vk-key:hover {
-      background: var(--accent2);
-      color: #000;
-      border-color: var(--accent2);
-      transform: translateY(-2px);
-    }
-    .vk-key:active { transform: translateY(0) scale(.94); }
-    .vk-key:focus  { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    .vk-key--action {
-      background: var(--surface);
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-    .vk-key--action:hover { background: var(--accent); color: #000; border-color: var(--accent); }
-
-    .vk-key--wide  { min-width: 3.2rem; }
-    .vk-key--space { flex: 1; min-width: 8rem; }
-    .vk-key--confirm {
-      background: var(--accent2);
-      color: #000;
-      border-color: var(--accent2);
-      min-width: 4.5rem;
-      font-weight: 700;
-    }
-    .vk-key--confirm:hover { background: #6effd8; border-color: #6effd8; color: #000; }
-
-    /* caps active state */
-    .vk-key--caps-on {
-      background: var(--accent) !important;
-      color: #000 !important;
-      border-color: var(--accent) !important;
-    }
-
-    /* ─── Tabela de comparação ───────────────────── */
-    .table-wrap { overflow-x: auto; margin-top: 2rem; border-radius: var(--radius); border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: var(--surface); }
-    th { text-align: left; padding: .9rem 1.2rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); border-bottom: 1px solid var(--border); }
-    td { padding: .85rem 1.2rem; border-bottom: 1px solid var(--border); font-size: .85rem; vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(128,128,128,.06); }
-    .badge { display: inline-block; padding: .15rem .6rem; border-radius: 999px; font-size: .7rem; font-weight: 700; }
-    .badge-a   { background: #3ecf6e22; color: var(--pass); border: 1px solid #3ecf6e44; }
-    .badge-aa  { background: #f5c84222; color: var(--accent); border: 1px solid #f5c84244; }
-    .badge-aaa { background: #4af7c422; color: var(--accent2); border: 1px solid #4af7c444; }
-
-    /* ─── Demonstração interativa ─────────────── */
-    .demo-box { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 2rem; }
-    .demo-header {
-      background: var(--surface);
-      padding: .75rem 1.2rem;
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      transition: background .35s;
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-r { background: #f75a5a; }
-    .dot-y { background: #f5c842; }
-    .dot-g { background: #3ecf6e; }
-    .demo-body { padding: 1.5rem; }
-
-    .contrast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .contrast-sample { border-radius: 8px; padding: 1rem; font-size: .9rem; font-weight: 700; }
-    .contrast-bad  { background: var(--contrast-bad-bg); color: var(--contrast-bad-fg); }
-    .contrast-good { background: var(--contrast-good-bg); color: var(--contrast-good-fg); }
-    .contrast-label { font-size: .75rem; margin-top: .5rem; display: flex; align-items: center; gap: .4rem; }
-    .icon-pass { color: var(--pass); }
-    .icon-fail { color: var(--fail); }
-
-    .focus-demo { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-top: .5rem; }
-    .btn-bad {
-      background: var(--btn-bad-bg);
-      color: var(--btn-bad-fg);
-      border: none; padding: .6rem 1.2rem; border-radius: 6px;
-      cursor: pointer; font-family: var(--mono); font-size: .85rem;
-    }
-    .btn-bad:focus { outline: none; }
-    .btn-good {
-      background: var(--accent); color: #000; border: none;
-      padding: .6rem 1.2rem; border-radius: 6px; cursor: pointer;
-      font-family: var(--mono); font-size: .85rem; font-weight: 700;
-      transition: background .2s;
-    }
-    .btn-good:focus { outline: 3px solid var(--accent2); outline-offset: 3px; }
-    .btn-good:hover { background: #ffd970; }
-
-    .form-demo { display: grid; gap: 1rem; max-width: 420px; }
-    .field-group { display: flex; flex-direction: column; gap: .3rem; }
-    .field-group label { font-size: .8rem; color: var(--accent2); letter-spacing: .04em; }
-    .field-group input {
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text); padding: .6rem .9rem; border-radius: 6px;
-      font-family: var(--mono); font-size: .85rem; transition: border-color .2s, background .35s;
-    }
-    .field-group input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
-    .field-group .hint { font-size: .72rem; color: var(--muted); }
-    .field-group .error { font-size: .72rem; color: var(--fail); display: none; }
-    .field-group input[aria-invalid="true"] { border-color: var(--fail); }
-    .field-group input[aria-invalid="true"] + .hint { display: none; }
-    .field-group input[aria-invalid="true"] ~ .error { display: block; }
-    .btn-submit {
-      background: var(--accent2); color: #000; border: none;
-      padding: .7rem 1.4rem; border-radius: 6px; cursor: pointer;
-      font-family: var(--mono); font-weight: 700; font-size: .85rem;
-      width: fit-content; transition: background .2s, transform .1s;
-    }
-    .btn-submit:focus { outline: 3px solid var(--accent); outline-offset: 3px; }
-    .btn-submit:hover { background: #6effd8; transform: translateY(-1px); }
-    .form-result { margin-top: 1rem; padding: .75rem 1rem; border-radius: 8px; font-size: .85rem; display: none; }
-    .form-result.success  { background: #3ecf6e22; border: 1px solid #3ecf6e44; color: var(--pass); display: block; }
-    .form-result.error-msg{ background: #f75a5a22; border: 1px solid #f75a5a44; color: var(--fail); display: block; }
-
-    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .tab-btn {
-      background: none; border: none; border-bottom: 2px solid transparent;
-      padding: .7rem 1.2rem; color: var(--muted); cursor: pointer;
-      font-family: var(--mono); font-size: .8rem; letter-spacing: .04em;
-      transition: color .2s, border-color .2s; margin-bottom: -1px;
-    }
-    .tab-btn[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
-    .tab-btn:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
-    .tab-panel { display: none; }
-    .tab-panel[aria-hidden="false"] { display: block; }
-
-    /* Checklist */
-    .checklist { list-style: none; display: grid; gap: .5rem; margin-top: 1rem; }
-    .checklist li {
-      display: flex; align-items: flex-start; gap: .75rem;
-      padding: .6rem .9rem; background: var(--surface);
-      border-radius: 6px; border: 1px solid var(--border); font-size: .85rem;
-      transition: background .35s;
-    }
-    .checklist li input[type="checkbox"] {
-      width: 16px; height: 16px; accent-color: var(--accent2);
-      flex-shrink: 0; margin-top: .2rem; cursor: pointer;
-    }
-    .checklist li label { cursor: pointer; }
-
-    .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 2rem; }
-    .app-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem;
-      transition: border-color .2s, transform .2s, background .35s;
-    }
-    .app-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .app-card .app-icon { font-size: 2rem; margin-bottom: .75rem; }
-    .app-card h3 { font-size: 1rem; margin-bottom: .4rem; }
-    .app-card p { font-size: .82rem; color: var(--muted); }
-    .app-tag { display: inline-block; font-size: .68rem; padding: .1rem .5rem; background: #f5c84215; color: var(--accent); border: 1px solid #f5c84230; border-radius: 999px; margin-top: .75rem; }
-
-    .steps { display: grid; gap: 1rem; margin-top: 2rem; }
-    .step { display: grid; grid-template-columns: 48px 1fr; gap: 1rem; align-items: start; }
-    .step-num {
-      width: 48px; height: 48px; border-radius: 50%;
-      border: 2px solid var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--serif); font-weight: 900; font-size: 1.2rem;
-      color: var(--accent); flex-shrink: 0;
-    }
-    .step-content h3 { font-size: 1rem; margin-bottom: .3rem; }
-    .step-content p { font-size: .85rem; color: var(--muted); }
-
-    /* ─── Bloco de código de exemplo ─────────────────────────────── */
-    pre {
-      background: var(--code-bg); border: 1px solid var(--border);
-      border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto;
-      font-size: .8rem; line-height: 1.6; margin-top: 1rem;
-      color: var(--accent2); transition: background .35s;
-    }
-    code { font-family: var(--mono); }
-
-    /* ─── Área de conclusão ──────────────────────────────────────── */
-    .conclusion-block {
-      background: var(--concl-bg); border-left: 4px solid var(--accent);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      padding: 1.5rem 2rem; margin-top: 2rem; font-size: .9rem; line-height: 1.9;
-      transition: background .35s;
-    }
-    .conclusion-block strong { color: var(--accent); }
-
-    /* Results list */
-    .results-list { list-style: none; display: grid; gap: .5rem; margin-top: 1rem; }
-    .results-list li {
-      display: flex; align-items: flex-start; gap: .6rem;
-      font-size: .9rem; line-height: 1.6;
-    }
-    .results-list li::before { content: "✓"; color: var(--pass); font-weight: 700; flex-shrink: 0; }
-
-    /* ─── Rodapé ─────────────────────────────────────────────────── */
-    footer {
-      text-align: center; padding: 3rem 1.5rem;
-      color: var(--muted); font-size: .78rem; border-top: 1px solid var(--border);
-    }
-    footer a { color: var(--accent2); }
-
-    /* ─── Ajustes para telas menores (responsividade) ───────────── */
-    @media (max-width: 600px) {
-      .hero-grid { grid-template-columns: 1fr 1fr; }
-      .contrast-grid { grid-template-columns: 1fr; }
-      nav { padding: .75rem 1rem; }
-      .nav-links { display: none; }
-    }
-
-    /* ─── Animações da interface ─────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .hero { animation: fadeUp .6s ease both; }
-  </style>
+  <!-- Folha de estilos separada -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -599,7 +33,7 @@
       <li><a href="#conclusao">Conclusão</a></li>
     </ul>
 
-    <!-- Theme toggle -->
+    <!-- Botão de alternar tema claro/escuro -->
     <button
       class="theme-toggle"
       id="theme-toggle"
@@ -622,11 +56,9 @@
         para <em>todo mundo</em>
       </h1>
       <p>
-        <p>
-            Diretrizes, princípios e exemplos práticos de como implementar acessibilidade
-            real em interfaces modernas usando o padrão WCAG (<strong>Web Content Accessibility Guidelines</strong>),
-            traduzido para o português como <strong>Diretrizes de Acessibilidade para Conteúdo Web</strong>.
-        </p>
+        Diretrizes, princípios e exemplos práticos de como implementar acessibilidade
+        real em interfaces modernas usando o padrão WCAG (<strong>Web Content Accessibility Guidelines</strong>),
+        traduzido para o português como <strong>Diretrizes de Acessibilidade para Conteúdo Web</strong>.
       </p>
       <div class="hero-grid" role="list" aria-label="Estatísticas sobre acessibilidade">
         <div class="hero-stat" role="listitem">
@@ -899,7 +331,7 @@
                 <button type="button" class="vk-key" data-char="_">_</button>
                 <button type="button" class="vk-key" data-char="@">@</button>
               </div>
-              <!-- Row 5: spacebar + confirm -->
+              <!-- Row 5: barra de espaço + confirmar -->
               <div class="vk-row" role="group" aria-label="Espaço e confirmar">
                 <button type="button" class="vk-key vk-key--space" data-char=" " aria-label="Espaço">espaço</button>
                 <button type="button" class="vk-key vk-key--action vk-key--confirm" data-action="confirm" aria-label="Confirmar e fechar">OK ✓</button>
@@ -1036,58 +468,148 @@
         <li>Demonstrações práticas de contraste, foco e uso de ARIA.</li>
         <li>Estrutura semântica compatível com leitores de tela.</li>
         <li>Alternância de tema claro/escuro com contraste validado em ambos os modos.</li>
+        <li>Teclado virtual on-screen para apoio a usuários com limitações motoras.</li>
       </ul>
 
-      <h3 style="margin-top:2.5rem">Exemplo de código — Toggle de Tema Acessível</h3>
-      <pre><code>&lt;!-- HTML: Botão com ARIA attributes --&gt;
+      <!-- ── EXEMPLO 1 — Skip Link ──────────────────────────── -->
+      <h3 style="margin-top:2.5rem">Exemplo de código 1 — Skip Link (Pular Navegação)</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:.5rem">
+        O critério WCAG 2.4.1 exige um mecanismo para pular blocos de conteúdo repetidos
+        (como o menu) e ir direto ao conteúdo principal. É o primeiro elemento focável da página.
+      </p>
+      <pre><code>&lt;!-- HTML: primeiro elemento dentro do &lt;body&gt; --&gt;
+&lt;a href="#main-content" class="skip-link"&gt;
+  Pular para o conteúdo principal
+&lt;/a&gt;
+
+&lt;main id="main-content"&gt;
+  ...
+&lt;/main&gt;
+
+/* CSS: escondido fora da tela até receber foco */
+.skip-link {
+  position: fixed;
+  top: -100px;      /* fora da área visível */
+  left: 1rem;
+  background: #f5c842;
+  color: #000;
+  padding: .5rem 1.2rem;
+  transition: top .2s;
+}
+
+.skip-link:focus {
+  top: 0;           /* aparece ao pressionar Tab */
+}</code></pre>
+
+      <!-- ── EXEMPLO 2 — Tema claro/escuro acessível ──────────── -->
+      <h3 style="margin-top:2.5rem">Exemplo de código 2 — Alternância de Tema Acessível</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:.5rem">
+        O botão de tema usa <code>aria-pressed</code> para informar o estado atual (pressionado ou não)
+        e <code>aria-label</code> dinâmico, que descreve a <em>ação</em> ao invés do estado —
+        prática recomendada para leitores de tela.
+      </p>
+      <pre><code>&lt;!-- HTML --&gt;
 &lt;button id="theme-toggle"
-        class="theme-toggle"
         aria-label="Alternar para modo claro"
-        aria-pressed="false"
-        title="Alternar tema claro/escuro"&gt;
+        aria-pressed="false"&gt;
   &lt;span class="icon" aria-hidden="true"&gt;🌙&lt;/span&gt;
-  &lt;span class="theme-toggle-label"&gt;Escuro&lt;/span&gt;
+  &lt;span id="theme-label"&gt;Escuro&lt;/span&gt;
 &lt;/button&gt;
 
-/* CSS: Transição suave e estados visuais */
-.theme-toggle {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: .35rem .8rem;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.theme-toggle:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+/* CSS: transição suave entre temas */
+body {
+  transition: background .35s ease, color .35s ease;
 }
 
-/* JavaScript: Lógica e ARIA */
+// JavaScript
+const html = document.documentElement;
+const btn  = document.getElementById('theme-toggle');
+
 btn.addEventListener('click', () => {
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  const next = isDark ? 'light' : 'dark';
-  html.setAttribute('data-theme', next);
-  btn.setAttribute('aria-pressed', isDark);
-  btn.setAttribute('aria-label', 
-    isDark ? 'Alternar para modo escuro' : 'Alternar para modo claro');
+  const atual = html.getAttribute('data-theme');
+  const novo  = atual === 'dark' ? 'light' : 'dark';
+
+  html.setAttribute('data-theme', novo);
+  localStorage.setItem('wcag-theme', novo);
+
+  // Atualiza o estado para leitores de tela
+  btn.setAttribute('aria-pressed', novo === 'light');
+  btn.setAttribute('aria-label',
+    novo === 'dark' ? 'Alternar para modo claro' : 'Alternar para modo escuro');
 });</code></pre>
 
-      <h3 style="margin-top:2.5rem">Exemplo de código — Tab acessível</h3>
-      <pre><code>&lt;!-- ARIA roles para tabs --&gt;
-            &lt;div role="tablist" aria-label="Exemplos"&gt;
-              &lt;button role="tab"
-                      aria-selected="true"
-                      aria-controls="panel-1"
-                      id="tab-1"&gt;Aba 1&lt;/button&gt;
-            &lt;/div&gt;
+      <!-- ── EXEMPLO 3 — Tabs acessíveis com JS completo ──────── -->
+      <h3 style="margin-top:2.5rem">Exemplo de código 3 — Abas (Tabs) Acessíveis</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:.5rem">
+        As abas seguem o padrão <strong>WAI-ARIA Tabs Pattern</strong>: o HTML define a estrutura
+        com <code>role="tablist"</code>, <code>role="tab"</code> e <code>role="tabpanel"</code>;
+        o JavaScript controla qual aba está ativa e permite navegação pelas setas
+        <code>←</code> / <code>→</code>, exatamente como o usuário descobriu nesta seção.
+      </p>
+      <pre><code>&lt;!-- HTML: estrutura com ARIA roles --&gt;
+&lt;div role="tablist" aria-label="Exemplos"&gt;
+  &lt;button role="tab"
+          aria-selected="true"
+          aria-controls="painel-1"
+          id="aba-1"&gt;Aba 1&lt;/button&gt;
 
-            &lt;div role="tabpanel"
-                id="panel-1"
-                aria-labelledby="tab-1"
-                aria-hidden="false"&gt;
-              Conteúdo da aba...
-            &lt;/div&gt;</code></pre>
+  &lt;button role="tab"
+          aria-selected="false"
+          aria-controls="painel-2"
+          id="aba-2"&gt;Aba 2&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div role="tabpanel"
+     id="painel-1"
+     aria-labelledby="aba-1"
+     aria-hidden="false"&gt;
+  Conteúdo da aba 1...
+&lt;/div&gt;
+
+&lt;div role="tabpanel"
+     id="painel-2"
+     aria-labelledby="aba-2"
+     aria-hidden="true"&gt;
+  Conteúdo da aba 2...
+&lt;/div&gt;
+
+// JavaScript: ativa abas e habilita navegação por setas
+const abas    = document.querySelectorAll('[role="tab"]');
+const paineis = document.querySelectorAll('[role="tabpanel"]');
+
+function ativarAba(aba) {
+  // 1. Desativa todas as abas e esconde todos os painéis
+  abas.forEach(a => a.setAttribute('aria-selected', 'false'));
+  paineis.forEach(p => p.setAttribute('aria-hidden', 'true'));
+
+  // 2. Ativa a aba clicada e mostra o painel correspondente
+  aba.setAttribute('aria-selected', 'true');
+  const idPainel = aba.getAttribute('aria-controls');
+  document.getElementById(idPainel).setAttribute('aria-hidden', 'false');
+}
+
+abas.forEach(aba => {
+  // Clique do mouse
+  aba.addEventListener('click', () => ativarAba(aba));
+
+  // Navegação por teclado (padrão WAI-ARIA)
+  aba.addEventListener('keydown', e => {
+    const lista = [...abas];
+    const indice = lista.indexOf(aba);
+
+    if (e.key === 'ArrowRight') {
+      const proxima = lista[(indice + 1) % lista.length];
+      ativarAba(proxima);
+      proxima.focus(); // move o foco junto com a seleção
+    }
+
+    if (e.key === 'ArrowLeft') {
+      const anterior = lista[(indice - 1 + lista.length) % lista.length];
+      ativarAba(anterior);
+      anterior.focus();
+    }
+  });
+});</code></pre>
     </section>
 
     <!-- ── CONCLUSÃO ──────────────────────────── -->
@@ -1119,81 +641,155 @@ btn.addEventListener('click', () => {
 
   </main>
 
+  <!-- ── RODAPÉ ─────────────────────────────────────────────────── -->
   <footer>
     <p>&bull; Mini projeto — WCAG e Acessibilidade Web na Prática &bull;</p>
-    <p>&bull; Feito por Antony, Cristyan e Gabriel &bull;</p>  
+    <p>&bull; Feito por Antony, Cristyan e Gabriel &bull;</p>
+
+    <p style="margin-top:1.5rem; font-size:.7rem; text-transform:uppercase; letter-spacing:.12em; color:var(--accent3)">
+      Referências
+    </p>
+    <p style="margin-top:.5rem; max-width:560px; margin-left:auto; margin-right:auto;">
+      W3C — Web Content Accessibility Guidelines (WCAG) 2.2:
+      <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" rel="noopener noreferrer">w3.org/WAI/WCAG22/quickref</a>
+      <br />
+      W3C — WAI-ARIA Authoring Practices Guide (APG):
+      <a href="https://www.w3.org/WAI/ARIA/apg/" target="_blank" rel="noopener noreferrer">w3.org/WAI/ARIA/apg</a>
+      <br />
+      MDN Web Docs — Acessibilidade e ARIA:
+      <a href="https://developer.mozilla.org/pt-BR/docs/Web/Accessibility" target="_blank" rel="noopener noreferrer">developer.mozilla.org</a>
+      <br />
+      WebAIM — Web Accessibility In Mind:
+      <a href="https://webaim.org/" target="_blank" rel="noopener noreferrer">webaim.org</a>
+      <br />
+      Lei Brasileira de Inclusão (LBI) — Lei nº 13.146/2015:
+      <a href="http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener noreferrer">planalto.gov.br</a>
+      <br />
+      eMAG — Modelo de Acessibilidade em Governo Eletrônico:
+      <a href="https://emag.governoeletronico.gov.br/" target="_blank" rel="noopener noreferrer">emag.governoeletronico.gov.br</a>
+    </p>
   </footer>
 
   <script>
-    /* ── Sistema de abas acessíveis ─────────────────────────────── */
+    /* ──────────────────────────────────────────────────────────────
+       1. SISTEMA DE ABAS ACESSÍVEIS (Tabs)
+       Segue o padrão WAI-ARIA Tabs Pattern:
+       - aria-selected controla qual aba está ativa
+       - aria-hidden controla qual painel é exibido
+       - Setas ← e → navegam entre as abas e movem o foco
+    ────────────────────────────────────────────────────────────── */
     const tabs = document.querySelectorAll('[role="tab"]');
     const panels = document.querySelectorAll('[role="tabpanel"]');
 
     function activateTab(tab) {
+      // Desativa todas as abas e esconde todos os painéis
       tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
       panels.forEach(p => p.setAttribute('aria-hidden', 'true'));
+
+      // Ativa a aba selecionada e mostra o painel correspondente
       tab.setAttribute('aria-selected', 'true');
       document.getElementById(tab.getAttribute('aria-controls')).setAttribute('aria-hidden', 'false');
     }
 
     tabs.forEach(tab => {
+      // Clique do mouse
       tab.addEventListener('click', () => activateTab(tab));
+
+      // Navegação por teclado (setas esquerda/direita)
       tab.addEventListener('keydown', e => {
         const list = [...tabs];
         const idx  = list.indexOf(tab);
-        if (e.key === 'ArrowRight') { const n = list[(idx+1)%list.length]; activateTab(n); n.focus(); }
-        if (e.key === 'ArrowLeft')  { const n = list[(idx-1+list.length)%list.length]; activateTab(n); n.focus(); }
+
+        if (e.key === 'ArrowRight') {
+          const next = list[(idx + 1) % list.length];
+          activateTab(next);
+          next.focus();
+        }
+        if (e.key === 'ArrowLeft') {
+          const prev = list[(idx - 1 + list.length) % list.length];
+          activateTab(prev);
+          prev.focus();
+        }
       });
     });
 
-    /* ── Form validation ────────────────────── */
+
+    /* ──────────────────────────────────────────────────────────────
+       2. VALIDAÇÃO DO FORMULÁRIO
+       - Marca campos inválidos com aria-invalid="true"
+       - O CSS então exibe a mensagem de erro associada
+       - O resultado é anunciado via aria-live="polite"
+    ────────────────────────────────────────────────────────────── */
     function handleForm(e) {
       e.preventDefault();
+
       const nome   = document.getElementById('nome');
       const email  = document.getElementById('email');
       const result = document.getElementById('form-result');
       let valid = true;
 
+      // Reseta o estado de validação
       [nome, email].forEach(el => el.removeAttribute('aria-invalid'));
       result.className = 'form-result';
       result.textContent = '';
 
-      if (!nome.value.trim())                            { nome.setAttribute('aria-invalid','true');  valid = false; }
-      if (!email.value.trim() || !email.value.includes('@')) { email.setAttribute('aria-invalid','true'); valid = false; }
+      // Valida nome (não pode estar vazio)
+      if (!nome.value.trim()) {
+        nome.setAttribute('aria-invalid', 'true');
+        valid = false;
+      }
 
+      // Valida e-mail (não pode estar vazio e precisa ter "@")
+      if (!email.value.trim() || !email.value.includes('@')) {
+        email.setAttribute('aria-invalid', 'true');
+        valid = false;
+      }
+
+      // Exibe resultado (sucesso ou erro)
       if (valid) {
         result.textContent = '✓ Formulário enviado com sucesso! (demonstração)';
         result.className = 'form-result success';
-        nome.value = ''; email.value = '';
+        nome.value = '';
+        email.value = '';
       } else {
         result.textContent = '✗ Corrija os campos destacados antes de enviar.';
         result.className = 'form-result error-msg';
       }
     }
 
-    /* ── Teclado Virtual ──────────────────── */
-    let vkTarget   = null;   
-    let vkCaps     = false;  
-    const vkPanel  = document.getElementById('vk-panel');
-    const vkPreview= document.getElementById('vk-preview');
-    const vkFName  = document.getElementById('vk-field-name');
-    const vkCapsBtn= document.getElementById('vk-caps');
 
-    // Labels amigáveis para o campo ativo
+    /* ──────────────────────────────────────────────────────────────
+       3. TECLADO VIRTUAL
+       Permite digitar nos campos do formulário sem usar o teclado
+       físico — útil para usuários com limitações motoras.
+    ────────────────────────────────────────────────────────────── */
+    let vkTarget    = null;   // input que está recebendo o texto
+    let vkCaps      = false;  // estado de maiúsculas/minúsculas
+    const vkPanel   = document.getElementById('vk-panel');
+    const vkPreview = document.getElementById('vk-preview');
+    const vkFName   = document.getElementById('vk-field-name');
+    const vkCapsBtn = document.getElementById('vk-caps');
+
+    // Nomes amigáveis exibidos no topo do teclado
     const fieldLabels = { nome: 'Nome completo', email: 'E-mail' };
 
+    // Abre o teclado virtual associado a um campo específico
     function openVK(fieldId) {
       vkTarget = document.getElementById(fieldId);
       vkPreview.textContent = vkTarget.value;
       vkFName.textContent   = fieldLabels[fieldId] || fieldId;
+
       vkPanel.setAttribute('aria-hidden', 'false');
       vkPanel.style.display = 'flex';
+
+      // Move o foco para a primeira tecla, após a animação de abertura
       setTimeout(() => {
         const firstKey = vkPanel.querySelector('.vk-key:not(.vk-key--action)');
         if (firstKey) firstKey.focus();
       }, 80);
     }
 
+    // Fecha o teclado virtual e grava o texto no campo real
     function closeVK() {
       if (vkTarget) {
         vkTarget.value = vkPreview.textContent;
@@ -1205,6 +801,7 @@ btn.addEventListener('click', () => {
       vkTarget = null;
     }
 
+    // Lida com cliques em qualquer tecla do painel
     vkPanel.addEventListener('click', e => {
       const key = e.target.closest('.vk-key');
       if (!key) return;
@@ -1214,45 +811,59 @@ btn.addEventListener('click', () => {
 
       if (action === 'backspace') {
         vkPreview.textContent = vkPreview.textContent.slice(0, -1);
+
       } else if (action === 'caps') {
+        // Alterna maiúsculas/minúsculas e atualiza a aparência das teclas
         vkCaps = !vkCaps;
         vkCapsBtn.classList.toggle('vk-key--caps-on', vkCaps);
         vkCapsBtn.setAttribute('aria-pressed', String(vkCaps));
+
         vkPanel.querySelectorAll('.vk-key[data-char]').forEach(k => {
           const c = k.dataset.char;
           if (c.length === 1 && /[a-z]/i.test(c)) {
-            k.textContent = vkCaps ? c.toUpperCase() : c.toUpperCase();
-            k.dataset.char = vkCaps ? c.toLowerCase() : c.toLowerCase();
+            k.textContent = c.toUpperCase();
           }
         });
+
       } else if (action === 'confirm') {
         closeVK();
+
       } else if (char !== undefined) {
         const insert = vkCaps ? char.toUpperCase() : char;
         vkPreview.textContent += insert;
       }
     });
 
+    // Tecla Esc fecha o teclado virtual
     vkPanel.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { e.preventDefault(); closeVK(); }
-    });
-
-    document.addEventListener('mousedown', e => {
-      if (vkPanel.getAttribute('aria-hidden') === 'false' &&
-          !vkPanel.contains(e.target) &&
-          !e.target.classList.contains('vk-trigger')) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
         closeVK();
       }
     });
 
-    /* ── Mudança de Tema ───────────────────────── */
-    const html       = document.documentElement;
-    const btn        = document.getElementById('theme-toggle');
-    const label      = document.getElementById('theme-label');
-    const icon       = btn.querySelector('.icon');
+    // Clicar fora do painel também fecha o teclado
+    document.addEventListener('mousedown', e => {
+      const cliqueForaDoPainel = vkPanel.getAttribute('aria-hidden') === 'false' &&
+                                  !vkPanel.contains(e.target) &&
+                                  !e.target.classList.contains('vk-trigger');
+      if (cliqueForaDoPainel) closeVK();
+    });
 
-    const saved = localStorage.getItem('wcag-theme');
-    if (saved) applyTheme(saved);
+
+    /* ──────────────────────────────────────────────────────────────
+       4. ALTERNÂNCIA DE TEMA (Claro / Escuro)
+       - Salva a preferência no localStorage
+       - Atualiza aria-label e aria-pressed para leitores de tela
+    ────────────────────────────────────────────────────────────── */
+    const html  = document.documentElement;
+    const btn   = document.getElementById('theme-toggle');
+    const label = document.getElementById('theme-label');
+    const icon  = btn.querySelector('.icon');
+
+    // Restaura o tema salvo, se existir
+    const savedTheme = localStorage.getItem('wcag-theme');
+    if (savedTheme) applyTheme(savedTheme);
 
     btn.addEventListener('click', () => {
       const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -1263,10 +874,13 @@ btn.addEventListener('click', () => {
     function applyTheme(theme) {
       html.setAttribute('data-theme', theme);
       const isDark = theme === 'dark';
-      icon.textContent         = isDark ? '🌙' : '☀️';
-      label.textContent        = isDark ? 'Escuro' : 'Claro';
-      btn.setAttribute('aria-label',   isDark ? 'Alternar para modo claro' : 'Alternar para modo escuro');
-      btn.setAttribute('aria-pressed', isDark ? 'false' : 'true');
+
+      icon.textContent  = isDark ? '🌙' : '☀️';
+      label.textContent = isDark ? 'Escuro' : 'Claro';
+
+      btn.setAttribute('aria-pressed', String(!isDark));
+      btn.setAttribute('aria-label',
+        isDark ? 'Alternar para modo claro' : 'Alternar para modo escuro');
     }
   </script>
 </body>
